@@ -2,12 +2,12 @@ name: CD devops 2024
 on:
   workflow_run:
     workflows: [ "CI devops 2024" ]
-    branches: [ main ]
     types:
       - completed
 
 jobs:
   build-and-push-docker-image:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
