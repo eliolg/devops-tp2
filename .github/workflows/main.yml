@@ -14,10 +14,11 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 17
-          distribution: 'adopt'
+          distribution: 'corretto'
 
       - name: Build and test with Maven
-        run: mvn -B package --file simple-api/pom.xml
+        run: mvn -B verify sonar:sonar -Dsonar.projectKey=eliolg_devops-tp2 -Dsonar.organization=eliolg -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}  --file ./simple-api/pom.xml
+
 
   build-and-push-docker-image:
     needs: test-backend
