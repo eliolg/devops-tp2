@@ -2,11 +2,9 @@ name: CD devops 2024
 on:
   workflow_run:
     workflows: [ "CI devops 2024" ]
+    branches: [ main ]
     types:
       - completed
-  push:
-    branches: [ main ]
-  pull_request:
 
 jobs:
   build-and-push-docker-image:
