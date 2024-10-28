@@ -26,6 +26,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
 
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build image and push backend
         uses: docker/build-push-action@v3
         with:
@@ -39,22 +42,13 @@ jobs:
         with:
           context: ./database
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+          # build on feature branches, push only on main branch
+          push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
           context: ./http-server
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http-server:latest
-
-  publish-docker-image:
-    needs: build-and-push-docker-image
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Login to DockerHub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Publish images to DockerHub
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http-server:latest
+          # build on feature branches, push only on main branch
+          push: ${{ github.ref == 'refs/heads/main' }}
